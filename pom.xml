@@ -50,7 +50,7 @@
                     <stopPort>9966</stopPort>
                     <scanIntervalSeconds>2</scanIntervalSeconds>
                     <reload>manual</reload>
-                    <dumpOnStart>true</dumpOnStart>
+<!--                    <dumpOnStart>true</dumpOnStart>-->
                     <webApp>
                         <contextPath>/</contextPath>
                     </webApp>
