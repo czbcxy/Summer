@@ -121,7 +121,9 @@ public class SunDispatcherSevlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
+        log.info("======================= init ========================");
         context = new SunGenericApplicationContext(CONTEXT_CONFIG_LOCATION);
+        log.info("======================= content init success! ========================");
         initStrategies(context);
     }
 
@@ -160,7 +162,7 @@ public class SunDispatcherSevlet extends HttpServlet {
         String file = this.getClass().getResource(root).getFile();
         File rootDir = new File(file);
         for (File listFile : rootDir.listFiles()) {
-            this.viewResolver.add(new SunViewResolver(root));
+            this.viewResolver.add(new SunViewResolver(listFile.getName()));
         }
     }
 
