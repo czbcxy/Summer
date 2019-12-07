@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebInitParam;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +29,7 @@ import java.util.regex.Pattern;
  * 前端控制器
  */
 @Slf4j
+@WebServlet(name = "dispatcherServlet", urlPatterns = {"/"}, loadOnStartup = 1)
 public class SunDispatcherSevlet extends HttpServlet {
 
     private static final String CONTEXT_CONFIG_LOCATION = "Applicaiton.properties";
