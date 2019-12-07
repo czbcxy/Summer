@@ -71,11 +71,13 @@
 
 
     <dependencies>
-        <!--        <dependency>-->
-        <!--            <groupId>org.eclipse.jetty</groupId>-->
-        <!--            <artifactId>jetty-server</artifactId>-->
-        <!--            <version>10.0.0.alpha1</version>-->
-        <!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/io.quarkus/quarkus-junit5 -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit5</artifactId>
+            <version>1.0.1.Final</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>
