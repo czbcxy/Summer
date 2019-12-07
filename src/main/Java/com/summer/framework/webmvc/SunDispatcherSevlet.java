@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 public class SunDispatcherSevlet extends HttpServlet {
 
     private static final String CONTEXT_CONFIG_LOCATION = "Applicaiton.properties";
-    protected SunApplicationContext context = null;
+    private SunApplicationContext context = null;
 
     private static final List<SunHandlerMapping> handlerMappings = new ArrayList<SunHandlerMapping>();
 
@@ -54,7 +54,7 @@ public class SunDispatcherSevlet extends HttpServlet {
             try {
                 processDispatchResult(request, response, new SunModelAndView("500"));
             } catch (IOException ex) {
-                ex.printStackTrace();
+                e.printStackTrace();
             }
             return;
         }
@@ -101,13 +101,13 @@ public class SunDispatcherSevlet extends HttpServlet {
     }
 
     private SunHandlerMapping getHandler(HttpServletRequest request) {
-        if (!handlerMappings.isEmpty()) {
+        if (handlerMappings.isEmpty()) {
             return null;
         }
         String contextPath = request.getContextPath();
         String requestURI = request.getRequestURI();
-        System.out.println(contextPath);
-        System.out.println(requestURI);
+        log.info("context => {} ",contextPath);
+        log.info("requestURI => {} ",requestURI);
         for (SunHandlerMapping handlerMapping : this.handlerMappings) {
             try {
                 Matcher matcher = handlerMapping.getPattern().matcher(requestURI);
@@ -166,11 +166,11 @@ public class SunDispatcherSevlet extends HttpServlet {
     private void initViewResolvers(SunApplicationContext context) {
         Properties config = context.getConfig();
         String root = config.getProperty("Root");
-        String file = this.getClass().getClassLoader().getResource(root).getFile();
-        File rootDir = new File(file);
-        for (File listFile : rootDir.listFiles()) {
-            this.viewResolver.add(new SunViewResolver(listFile));
-        }
+//        String file = this.getClass().getClassLoader().getResource(root).getFile();
+//        File rootDir = new File(file);
+//        for (File listFile : rootDir.listFiles()) {
+        this.viewResolver.add(new SunViewResolver(root));
+//        }
     }
 
     private void initRequestToViewNameTranslator(SunApplicationContext context) {
@@ -180,12 +180,9 @@ public class SunDispatcherSevlet extends HttpServlet {
     }
 
     private void initHandlerAdapters(SunApplicationContext context) {
-
         for (SunHandlerMapping handlerMapping : handlerMappings) {
-//            this.handlerAdapter.put(handlerMapping,);
-
+            this.handlerAdapter.put(handlerMapping,new SunHandlerAdapter());
         }
-
     }
 
     private void initHandlerMappings(SunApplicationContext context) {
@@ -231,11 +228,5 @@ public class SunDispatcherSevlet extends HttpServlet {
     }
 
     private void initMultipartResolver(SunApplicationContext context) {
-    }
-
-
-    public static void main(String[] args) {
-        SunGenericApplicationContext context = new SunGenericApplicationContext(CONTEXT_CONFIG_LOCATION);
-        new SunDispatcherSevlet().initStrategies(context);
     }
 }

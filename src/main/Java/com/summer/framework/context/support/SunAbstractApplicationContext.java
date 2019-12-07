@@ -21,6 +21,8 @@ public abstract class SunAbstractApplicationContext extends SunAbstractBeanDefin
 
     public void refresh() {
         synchronized (this.startupShutdownMonitor) {
+            //加载banner
+            Banner();
             //1，定位配置文件
             scanLoadBeanDefinitions(configLoactions);
             //2，加载配置文件，扫描相关的类，

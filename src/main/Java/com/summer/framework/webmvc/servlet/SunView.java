@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public class SunView {
 
     private File viewFile;
-    private static final String defaultContentType = "text/html;charset=utf=8";
+    private static final String defaultContentType = "text/html;charset=utf-8";
     private static final String regex = "#\\{[^\\}]+\\}";
     private static final Pattern compile = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 
@@ -24,8 +24,6 @@ public class SunView {
     public void render(Map<String, ?> model, HttpServletRequest request,
                        HttpServletResponse response) throws IOException {
         StringBuffer sb = new StringBuffer();
-
-
         RandomAccessFile r = new RandomAccessFile(this.viewFile, "r");
         String line = null;
         while (null != (line = r.readLine())) {
