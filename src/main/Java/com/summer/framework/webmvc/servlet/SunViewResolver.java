@@ -8,9 +8,10 @@ public class SunViewResolver {
     private File rootPath;
     private static final String defaultTemple_suffx = ".html";
 
-    public SunViewResolver(String root) {
-        String templeRootPath = this.getClass().getClassLoader().getResource(root).getFile();
-        rootPath = new File(templeRootPath);
+    public SunViewResolver(File root) {
+        this.rootPath = root;
+//        String templeRootPath = this.getClass().getClassLoader().getResource(root).getFile();
+//        rootPath = new File(templeRootPath);
     }
 
     public SunView resolveViewName(String viewName, Locale locale) {

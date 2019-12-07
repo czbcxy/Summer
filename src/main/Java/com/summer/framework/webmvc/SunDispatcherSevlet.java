@@ -124,9 +124,13 @@ public class SunDispatcherSevlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        log.info("======================= init ========================");
+        log.info("=============================== init ====================================");
         context = new SunGenericApplicationContext(CONTEXT_CONFIG_LOCATION);
-        log.info("======================= content init success! ========================");
+        for (String definitionName : context.getBeanDefinitionNames()) {
+            log.info("bean :==> {}", definitionName);
+        }
+        log.info("size :==> {}", context.getBeanDifinitionCount());
+        log.info("======================= content init successful! ========================");
         initStrategies(context);
     }
 
@@ -162,10 +166,10 @@ public class SunDispatcherSevlet extends HttpServlet {
     private void initViewResolvers(SunApplicationContext context) {
         Properties config = context.getConfig();
         String root = config.getProperty("Root");
-        String file = this.getClass().getResource(root).getFile();
+        String file = this.getClass().getClassLoader().getResource(root).getFile();
         File rootDir = new File(file);
         for (File listFile : rootDir.listFiles()) {
-            this.viewResolver.add(new SunViewResolver(listFile.getName()));
+            this.viewResolver.add(new SunViewResolver(listFile));
         }
     }
 
@@ -192,6 +196,7 @@ public class SunDispatcherSevlet extends HttpServlet {
             if (!clazz.isAnnotationPresent(Controller.class)) {
                 continue;
             }
+            //类注解
             String classPath = "";
             if (clazz.isAnnotationPresent(RequestMapping.class)) {
                 RequestMapping clazzAnnotation = clazz.getAnnotation(RequestMapping.class);
@@ -212,7 +217,7 @@ public class SunDispatcherSevlet extends HttpServlet {
                 SunHandlerMapping handlerMapping = new SunHandlerMapping().setController(bean).setMethod(method).setPattern(compile);
                 this.handlerMappings.add(handlerMapping);
                 log.info("HandlerMapping ==> {} ", handlerMapping.toString());
-                sb.delete(0, -1);
+                sb.setLength(0);
             }
 
         }
