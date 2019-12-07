@@ -17,7 +17,7 @@ import java.util.Properties;
  */
 public abstract class SunAbstractBeanDefinitionReader extends SunDefaultListableBeanFactory implements SunBeanDefinitionReader {
 
-    protected Properties config = new Properties();
+    protected static final Properties config = new Properties();
     protected List<String> registyBeanClass = new ArrayList<>();
 
     protected void scanLoadBeanDefinitions(String[] configLoactions) {
@@ -49,14 +49,14 @@ public abstract class SunAbstractBeanDefinitionReader extends SunDefaultListable
                 if (!file.getName().endsWith(".class")) {
                     continue;
                 }
-                String className = (basePackage.replace("/",".") + "." + file.getName()).replace(".class", "");
+                String className = (basePackage.replace("/", ".") + "." + file.getName()).replace(".class", "");
                 registyBeanClass.add(className);
             }
         }
     }
 
-    protected Properties getConfig() {
-        return this.config;
+    public Properties getConfig() {
+        return config;
     }
 
     @Override

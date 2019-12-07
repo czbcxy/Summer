@@ -48,8 +48,11 @@ public class SunDispatcherSevlet extends HttpServlet {
         try {
             this.doDispatcher(request, response);
         } catch (Exception e) {
-//                response.getWriter().write("500.html");
-            processDispatchResult(request, response, new SunModelAndView("500"));
+            try {
+                processDispatchResult(request, response, new SunModelAndView("500"));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
             return;
         }
     }
@@ -72,7 +75,7 @@ public class SunDispatcherSevlet extends HttpServlet {
 
     }
 
-    private void processDispatchResult(HttpServletRequest request, HttpServletResponse response, SunModelAndView mv) {
+    private void processDispatchResult(HttpServletRequest request, HttpServletResponse response, SunModelAndView mv) throws IOException {
         if (null == mv || viewResolver.isEmpty()) {
             return;
         }
