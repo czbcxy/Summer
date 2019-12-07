@@ -8,12 +8,12 @@ import com.summer.framework.annotation.RequestMapping;
 @RequestMapping("basepath")
 public class ControllerDemo {
 
-//    @Autowired
-//    private ServiceDemo serviceDemo;
+    @Autowired
+    private ServiceDemo serviceDemo;
 
     @RequestMapping("hello")
     public String hello() {
-//        serviceDemo.test();
+        serviceDemo.test();
         return "Hello world";
     }
 }
