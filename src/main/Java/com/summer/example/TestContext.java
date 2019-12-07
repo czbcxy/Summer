@@ -1,4 +1,4 @@
-package com.summer.validation;
+package com.summer.example;
 
 import com.summer.framework.context.support.SunGenericApplicationContext;
 
