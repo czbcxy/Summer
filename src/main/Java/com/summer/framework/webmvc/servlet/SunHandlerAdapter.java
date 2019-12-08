@@ -7,6 +7,7 @@ import com.summer.framework.webmvc.annotition.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -22,9 +23,9 @@ public class SunHandlerAdapter {
         return handler instanceof SunHandlerMapping;
     }
 
-    public Object handle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public Object[] handle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         SunHandlerMapping handlerMapping = (SunHandlerMapping) handler;
-        Object controller = handlerMapping.getController();
+//        Object controller = handlerMapping.getController();
         Method method = handlerMapping.getMethod();
         //参数匹配
         Map<String, Integer> paramsIndexMapping = new HashMap<>();
@@ -71,13 +72,17 @@ public class SunHandlerAdapter {
             int respIndex = paramsIndexMapping.get(HttpServletResponse.class.getName());
             paramValues[respIndex] = response;
         }
+        return paramValues;
+    }
 
+    public Object Invoke(Object controller, Method method, Object[] paramValues) throws IllegalAccessException, InvocationTargetException {
         Object invoke = method.invoke(controller, paramValues);
         if (invoke == null || invoke instanceof Void) {
             return null;
         }
         return invoke;
     }
+
 
     private Object caseStringValue(String value, Class<?> parameterType) {
         if (String.class.equals(parameterType)) {

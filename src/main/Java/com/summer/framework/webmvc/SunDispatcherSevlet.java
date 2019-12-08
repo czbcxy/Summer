@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,28 +40,20 @@ public class SunDispatcherSevlet extends HttpServlet {
     private static final List<SunViewResolver> viewResolver = new ArrayList<>();
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) {
         this.doPost(request, response);
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) {
         try {
             this.doDispatcher(request, response);
-        } catch (Exception e) {
-            try {
-                HashMap<String, Object> map = new HashMap<>();
-                map.put("errorCode", e.getStackTrace());
-                map.put("errorMessage", e.getMessage());
-                processDispatchResult(request, response, new SunModelAndView("500", map));
-            } catch (IOException ex) {
-                e.printStackTrace();
-            }
-            return;
+        } catch (IOException e) {
+            log.error("IOException log ==> {}", e.getMessage());
         }
     }
 
-    private void doDispatcher(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void doDispatcher(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //先去reqeust中拿到url，匹配handlerMapping
         SunHandlerMapping handlerMapping = getHandler(request);
         if (handlerMapping == null) {
@@ -71,9 +64,18 @@ public class SunDispatcherSevlet extends HttpServlet {
         SunHandlerAdapter adapter = gethandlerAdapter(handlerMapping);
 
         //调用方法,返回值和模板
-        Object mv = adapter.handle(request, response, handlerMapping);
+        Object[] paramValue = adapter.handle(request, response, handlerMapping);
+        Object mv = null;
+        try {
+            mv = adapter.Invoke(handlerMapping.getController(), handlerMapping.getMethod(), paramValue);
+        } catch (Exception e) {
+            HashMap<String, Object> model = new HashMap<>();
+            model.put("errorCode", e.getCause().getMessage());
+            model.put("stackTrace", e.getCause().getStackTrace());
+            processDispatchResult(request, response, new SunModelAndView("500", model));
+        }
         if (SunModelAndView.class.equals(handlerMapping.getMethod().getReturnType())) {
-            processDispatchResult(request, response, (SunModelAndView)mv);
+            processDispatchResult(request, response, (SunModelAndView) mv);
         } else {
             response.setContentType(ContentType.jsonContentType.value);
             response.setCharacterEncoding("utf-8");
@@ -86,7 +88,7 @@ public class SunDispatcherSevlet extends HttpServlet {
             return;
         }
         for (SunViewResolver resolver : viewResolver) {
-            SunView view = resolver.resolveViewName(mv.getViewName(), null);
+            SunErrorView view = resolver.resolveViewName(mv.getViewName(), null);
             view.render(mv.getModel(), request, response);
             return;
         }

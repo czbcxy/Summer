@@ -38,8 +38,11 @@ public class ControllerDemo {
 
     @RequestMapping("do500")
     public SunModelAndView work500() {
-        HashMap<String, Object> model = new HashMap<>();
-        return new SunModelAndView("500", model);
+        String[] str = null;
+        for (String s : str) {
+            System.out.println(s);
+        }
+        return null;
     }
 
 }

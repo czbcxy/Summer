@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SunView {
+public class SunErrorView {
 
     private File viewFile;
 //    private static final String defaultContentType = "text/html;charset=utf-8";
@@ -18,7 +18,7 @@ public class SunView {
     private static final String regex = "#\\{[^\\}]+\\}";
     private static final Pattern compile = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 
-    public SunView(File viewFile) {
+    public SunErrorView(File viewFile) {
         this.viewFile = viewFile;
     }
 
