@@ -9,7 +9,7 @@ public class ApplicationContentTest {
     @Test
     public void content() {
         SunGenericApplicationContext context = new SunGenericApplicationContext(new String[]{"Applicaiton.properties"});
-        ControllerBase controllerDemo = (ControllerBase) context.getBean("controllerDemo");
+        ControllerBase controllerDemo = (ControllerBase) context.getBean("controllerBase");
         System.out.println(controllerDemo.world());
     }
 }
