@@ -13,7 +13,8 @@ import java.util.regex.Pattern;
 public class SunView {
 
     private File viewFile;
-    private static final String defaultContentType = "text/html;charset=utf-8";
+//    private static final String defaultContentType = "text/html;charset=utf-8";
+
     private static final String regex = "#\\{[^\\}]+\\}";
     private static final Pattern compile = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 
@@ -40,8 +41,8 @@ public class SunView {
             }
             sb.append(line);
         }
+        response.setContentType(ContentType.defaultContentType.value);
         response.setCharacterEncoding("utf-8");
-        response.setContentType(defaultContentType);
         response.getWriter().write(sb.toString());
     }
 }

@@ -10,6 +10,6 @@ public class ApplicationContentTest {
     public void content() {
         SunGenericApplicationContext context = new SunGenericApplicationContext(new String[]{"Applicaiton.properties"});
         ControllerDemo controllerDemo = (ControllerDemo) context.getBean("controllerDemo");
-        System.out.println(controllerDemo.hello());
+        System.out.println(controllerDemo.world());
     }
 }

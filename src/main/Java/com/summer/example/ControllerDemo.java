@@ -4,7 +4,6 @@ import com.summer.framework.annotation.Autowired;
 import com.summer.framework.annotation.Controller;
 import com.summer.framework.annotation.RequestMapping;
 import com.summer.framework.webmvc.servlet.SunModelAndView;
-import sun.rmi.runtime.Log;
 
 import java.util.HashMap;
 
@@ -17,7 +16,12 @@ public class ControllerDemo {
 
     @RequestMapping("hello")
     public void hello() {
-        serviceDemo.test();
+        serviceDemo.hello();
+    }
+
+    @RequestMapping("world")
+    public String world() {
+        return serviceDemo.world();
     }
 
     @RequestMapping("index")

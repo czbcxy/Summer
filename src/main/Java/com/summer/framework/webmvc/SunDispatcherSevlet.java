@@ -1,5 +1,6 @@
 package com.summer.framework.webmvc;
 
+import com.google.gson.Gson;
 import com.summer.framework.annotation.Controller;
 import com.summer.framework.annotation.RequestMapping;
 import com.summer.framework.context.SunApplicationContext;
@@ -9,18 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +29,7 @@ import java.util.regex.Pattern;
 public class SunDispatcherSevlet extends HttpServlet {
 
     private static final String CONTEXT_CONFIG_LOCATION = "Applicaiton.properties";
+    private static final Gson gson = new Gson();
     private SunApplicationContext context = null;
 
     private static final List<SunHandlerMapping> handlerMappings = new ArrayList<SunHandlerMapping>();
@@ -52,7 +49,10 @@ public class SunDispatcherSevlet extends HttpServlet {
             this.doDispatcher(request, response);
         } catch (Exception e) {
             try {
-                processDispatchResult(request, response, new SunModelAndView("500"));
+                HashMap<String, Object> map = new HashMap<>();
+                map.put("errorCode", e.getStackTrace());
+                map.put("errorMessage", e.getMessage());
+                processDispatchResult(request, response, new SunModelAndView("500", map));
             } catch (IOException ex) {
                 e.printStackTrace();
             }
@@ -71,11 +71,14 @@ public class SunDispatcherSevlet extends HttpServlet {
         SunHandlerAdapter adapter = gethandlerAdapter(handlerMapping);
 
         //调用方法,返回值和模板
-        SunModelAndView mv = adapter.handle(request, response, handlerMapping);
-
-        //将modelview转化为html
-        processDispatchResult(request, response, mv);
-
+        Object mv = adapter.handle(request, response, handlerMapping);
+        if (SunModelAndView.class.equals(handlerMapping.getMethod().getReturnType())) {
+            processDispatchResult(request, response, (SunModelAndView)mv);
+        } else {
+            response.setContentType(ContentType.jsonContentType.value);
+            response.setCharacterEncoding("utf-8");
+            response.getWriter().write(gson.toJson(mv));
+        }
     }
 
     private void processDispatchResult(HttpServletRequest request, HttpServletResponse response, SunModelAndView mv) throws IOException {
@@ -106,8 +109,8 @@ public class SunDispatcherSevlet extends HttpServlet {
         }
         String contextPath = request.getContextPath();
         String requestURI = request.getRequestURI();
-        log.info("context => {} ",contextPath);
-        log.info("requestURI => {} ",requestURI);
+        log.info("context => {} ", contextPath);
+        log.info("requestURI => {} ", requestURI);
         for (SunHandlerMapping handlerMapping : this.handlerMappings) {
             try {
                 Matcher matcher = handlerMapping.getPattern().matcher(requestURI);
@@ -166,11 +169,7 @@ public class SunDispatcherSevlet extends HttpServlet {
     private void initViewResolvers(SunApplicationContext context) {
         Properties config = context.getConfig();
         String root = config.getProperty("Root");
-//        String file = this.getClass().getClassLoader().getResource(root).getFile();
-//        File rootDir = new File(file);
-//        for (File listFile : rootDir.listFiles()) {
         this.viewResolver.add(new SunViewResolver(root));
-//        }
     }
 
     private void initRequestToViewNameTranslator(SunApplicationContext context) {
@@ -181,7 +180,7 @@ public class SunDispatcherSevlet extends HttpServlet {
 
     private void initHandlerAdapters(SunApplicationContext context) {
         for (SunHandlerMapping handlerMapping : handlerMappings) {
-            this.handlerAdapter.put(handlerMapping,new SunHandlerAdapter());
+            this.handlerAdapter.put(handlerMapping, new SunHandlerAdapter());
         }
     }
 

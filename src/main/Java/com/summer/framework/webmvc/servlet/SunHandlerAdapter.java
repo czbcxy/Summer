@@ -1,5 +1,7 @@
 package com.summer.framework.webmvc.servlet;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.summer.framework.webmvc.annotition.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +22,7 @@ public class SunHandlerAdapter {
         return handler instanceof SunHandlerMapping;
     }
 
-    public SunModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public Object handle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         SunHandlerMapping handlerMapping = (SunHandlerMapping) handler;
         Object controller = handlerMapping.getController();
         Method method = handlerMapping.getMethod();
@@ -74,11 +76,7 @@ public class SunHandlerAdapter {
         if (invoke == null || invoke instanceof Void) {
             return null;
         }
-
-        if (method.getReturnType() == SunModelAndView.class) {
-            return (SunModelAndView) invoke;
-        }
-        return null;
+        return invoke;
     }
 
     private Object caseStringValue(String value, Class<?> parameterType) {
