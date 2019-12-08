@@ -3,6 +3,7 @@ package com.summer.framework.beans.support;
 import com.summer.framework.beans.SunBeanDefinitionReader;
 import com.summer.framework.beans.factory.config.SunBeanDefinition;
 import com.summer.framework.beans.factory.config.SunRootBeanDefinition;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.Properties;
 /**
  * 默认资源扫描器
  */
+@Slf4j
 public abstract class SunAbstractBeanDefinitionReader extends SunDefaultListableBeanFactory implements SunBeanDefinitionReader {
 
     protected static final Properties config = new Properties();
@@ -28,12 +30,14 @@ public abstract class SunAbstractBeanDefinitionReader extends SunDefaultListable
             config.load(io);
         } catch (Exception e) {
             e.printStackTrace();
+            log.info("BaseConfig error => {} ", e);
         } finally {
             if (io == null) {
                 try {
                     io.close();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    log.info("BaseConfig IOError => {} ", e);
                 }
             }
         }
@@ -70,6 +74,7 @@ public abstract class SunAbstractBeanDefinitionReader extends SunDefaultListable
             }
         } catch (Exception e) {
             e.printStackTrace();
+            log.info("loadBeanDefinitions error => {} ", e);
         }
     }
 

@@ -66,7 +66,7 @@ public abstract class SunAbstractAutowireCapableBeanFactory implements SunAutowi
             //默认单利，不是单利不处理
             if (mbd.isSingleton()) {
                 if (this.singletonObjects.containsKey(className) || this.singletonObjects.containsKey(factoryBeanName)) {
-                    this.singletonObjects.get(className);
+                    beanInstance = this.singletonObjects.get(factoryBeanName);
                 } else {
                     beanInstance = Class.forName(className).newInstance();
 //                    beanInstance = getInstantiationStrategy().instantiate(mbd, className, parent);
@@ -110,10 +110,10 @@ public abstract class SunAbstractAutowireCapableBeanFactory implements SunAutowi
         }
         field.setAccessible(true);
         try {
-            Object autowiredbeanWrapper = this.beanContextObjectsCache.get(toLowerCaseAtFirst(autowiredBeanName)).getWrappedInstance();
+            Object autowiredbeanWrapper = this.singletonObjects.get(toLowerCaseAtFirst(autowiredBeanName));
             field.set(wrappedInstance, autowiredbeanWrapper);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 

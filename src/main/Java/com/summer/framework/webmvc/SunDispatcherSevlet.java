@@ -85,8 +85,7 @@ public class SunDispatcherSevlet extends HttpServlet {
         } else {
             response.setContentType(ContentType.jsonContentType.value);
             response.setCharacterEncoding("utf-8");
-            String toJson = gson.toJson(mv);
-            response.getWriter().print(toJson.substring(1, toJson.length() - 1));
+            response.getWriter().print(gson.toJson(mv));
         }
     }
 
