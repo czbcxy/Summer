@@ -68,10 +68,15 @@ public class SunDispatcherSevlet extends HttpServlet {
         Object mv = null;
         try {
             mv = adapter.Invoke(handlerMapping.getController(), handlerMapping.getMethod(), paramValue);
-        } catch (Exception e) {
+        } catch (IllegalAccessException e) {
             HashMap<String, Object> model = new HashMap<>();
             model.put("errorCode", e.getCause().getMessage());
             model.put("stackTrace", e.getCause().getStackTrace());
+            processDispatchResult(request, response, new SunModelAndView("500", model));
+        } catch (InvocationTargetException e) {
+            HashMap<String, Object> model = new HashMap<>();
+            model.put("errorCode", e.getTargetException().getCause().getMessage());
+            model.put("stackTrace", e.getTargetException().getCause().getStackTrace());
             processDispatchResult(request, response, new SunModelAndView("500", model));
         }
         if (SunModelAndView.class.equals(handlerMapping.getMethod().getReturnType())) {
