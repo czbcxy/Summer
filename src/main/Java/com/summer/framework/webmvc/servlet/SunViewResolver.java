@@ -13,12 +13,12 @@ public class SunViewResolver {
         rootPath = new File(templeRootPath);
     }
 
-    public SunErrorView resolveViewName(String viewName, Locale locale) {
+    public SunView resolveViewName(String viewName, Locale locale) {
         if (viewName == null || viewName == "") {
             return null;
         }
         viewName = viewName.toLowerCase().endsWith(defaultTemple_suffx) ? viewName : (viewName + defaultTemple_suffx);
         File templeFile = new File((rootPath.getPath() + "/" + viewName).replace("/+", "/"));
-        return new SunErrorView(templeFile);
+        return new SunView(templeFile);
     }
 }

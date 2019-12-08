@@ -1,15 +1,11 @@
 package com.summer.framework.webmvc.servlet;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.summer.framework.webmvc.annotition.RequestParam;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +21,6 @@ public class SunHandlerAdapter {
 
     public Object[] handle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         SunHandlerMapping handlerMapping = (SunHandlerMapping) handler;
-//        Object controller = handlerMapping.getController();
         Method method = handlerMapping.getMethod();
         //参数匹配
         Map<String, Integer> paramsIndexMapping = new HashMap<>();
@@ -50,7 +45,6 @@ public class SunHandlerAdapter {
                 paramsIndexMapping.put(type.getName(), i);
             }
         }
-
 
         Map<String, String[]> parameterMap = request.getParameterMap();
         Object[] paramValues = new Object[parameterTypes.length];
@@ -93,11 +87,7 @@ public class SunHandlerAdapter {
             return Double.valueOf(value);
         } else if (Boolean.class.equals(parameterType)) {
             return Boolean.valueOf(value);
-        } else {
-            if (value != null) {
-                return value.toString();
-            }
-            return value;
         }
+        return value;
     }
 }

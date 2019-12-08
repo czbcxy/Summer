@@ -6,6 +6,7 @@ import com.summer.framework.annotation.RequestMapping;
 import com.summer.framework.webmvc.servlet.SunModelAndView;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("basepath")
@@ -14,14 +15,21 @@ public class ControllerDemo {
     @Autowired
     private ServiceDemo serviceDemo;
 
+    @RequestMapping("hw")
+    public void hw() {
+        System.out.println("Hello world");
+    }
+
     @RequestMapping("hello")
-    public void hello() {
-        serviceDemo.hello();
+    public String hello() {
+        return serviceDemo.hello();
     }
 
     @RequestMapping("world")
-    public String world() {
-        return serviceDemo.world();
+    public SunModelAndView world() {
+        Map map = new HashMap<String, Object>();
+        map.put("temple", serviceDemo.world());
+        return new SunModelAndView("temple", map);
     }
 
     @RequestMapping("index")

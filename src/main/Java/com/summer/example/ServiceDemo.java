@@ -4,11 +4,11 @@ import com.summer.framework.annotation.Service;
 
 @Service
 public class ServiceDemo {
-    public void hello() {
-        System.out.println("service is exectue");
+    public String hello() {
+        return "service is exectue";
     }
 
     public String world() {
-        return "helloworld";
+        return "<html><a href='https://github.com/czbcxy/Summer/tree/master'>This is Summer link</a></html>";
     }
 }

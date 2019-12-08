@@ -1,6 +1,7 @@
 package com.summer.framework.webmvc;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.summer.framework.annotation.Controller;
 import com.summer.framework.annotation.RequestMapping;
 import com.summer.framework.context.SunApplicationContext;
@@ -30,7 +31,7 @@ import java.util.regex.Pattern;
 public class SunDispatcherSevlet extends HttpServlet {
 
     private static final String CONTEXT_CONFIG_LOCATION = "Applicaiton.properties";
-    private static final Gson gson = new Gson();
+    private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
     private SunApplicationContext context = null;
 
     private static final List<SunHandlerMapping> handlerMappings = new ArrayList<SunHandlerMapping>();
@@ -84,7 +85,8 @@ public class SunDispatcherSevlet extends HttpServlet {
         } else {
             response.setContentType(ContentType.jsonContentType.value);
             response.setCharacterEncoding("utf-8");
-            response.getWriter().write(gson.toJson(mv));
+            String toJson = gson.toJson(mv);
+            response.getWriter().print(toJson.substring(1, toJson.length() - 1));
         }
     }
 
@@ -93,7 +95,7 @@ public class SunDispatcherSevlet extends HttpServlet {
             return;
         }
         for (SunViewResolver resolver : viewResolver) {
-            SunErrorView view = resolver.resolveViewName(mv.getViewName(), null);
+            SunView view = resolver.resolveViewName(mv.getViewName(), null);
             view.render(mv.getModel(), request, response);
             return;
         }
